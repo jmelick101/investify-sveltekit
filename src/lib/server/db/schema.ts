@@ -35,7 +35,7 @@ export const users = pgTable('users', {
 	tokenBalance: decimal('token_balance', { precision: 18, scale: 2 }).notNull().default('0'),
 	group: varchar('group', { length: 100 }),
 	referralCode: varchar('referral_code', { length: 50 }).unique(),
-	referredBy: uuid('referred_by').references(() => users.id, { onDelete: 'set null' }),
+	referredBy: uuid('referred_by').references((): any => users.id, { onDelete: 'set null' }),
 	kycStatus: varchar('kyc_status', { length: 20 }).notNull().default('pending'),
 	twoFactorSecret: text('two_factor_secret'),
 	twoFactorRecoveryCodes: text('two_factor_recovery_codes'),
