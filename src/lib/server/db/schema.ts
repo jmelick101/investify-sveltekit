@@ -45,17 +45,21 @@ export const users = pgTable('users', {
 });
 
 // Sessions table (Lucia Auth)
-export const sessions = pgTable('sessions', {
-	id: varchar('id', { length: 255 }).primaryKey(),
-	userId: uuid('user_id')
-		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' }),
-	expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
-	ipAddress: varchar('ip_address', { length: 45 }),
-	userAgent: text('user_agent')
-}, (table) => ({
-	userIdIdx: index('sessions_user_id_idx').on(table.userId)
-}));
+export const sessions = pgTable(
+	'sessions',
+	{
+		id: varchar('id', { length: 255 }).primaryKey(),
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+		ipAddress: varchar('ip_address', { length: 45 }),
+		userAgent: text('user_agent')
+	},
+	(table) => ({
+		userIdIdx: index('sessions_user_id_idx').on(table.userId)
+	})
+);
 
 // Password reset tokens
 export const passwordResetTokens = pgTable('password_reset_tokens', {
@@ -129,32 +133,36 @@ export const holidays = pgTable('holidays', {
 });
 
 // Investments
-export const investments = pgTable('investments', {
-	id: uuid('id').defaultRandom().primaryKey(),
-	userId: uuid('user_id')
-		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' }),
-	planId: uuid('plan_id')
-		.notNull()
-		.references(() => plans.id, { onDelete: 'cascade' }),
-	amount: decimal('amount', { precision: 18, scale: 2 }).notNull(),
-	paymentMethod: varchar('payment_method', { length: 50 }).notNull(),
-	cryptoSymbol: varchar('crypto_symbol', { length: 10 }),
-	cryptoAmount: decimal('crypto_amount', { precision: 18, scale: 8 }),
-	transactionHash: varchar('transaction_hash', { length: 255 }),
-	payoutOption: varchar('payout_option', { length: 20 }).notNull(),
-	status: varchar('status', { length: 20 }).notNull().default('pending'),
-	profitAccrued: decimal('profit_accrued', { precision: 18, scale: 2 }).notNull().default('0'),
-	totalExpectedProfit: decimal('total_expected_profit', { precision: 18, scale: 2 }).notNull(),
-	startDate: date('start_date'),
-	endDate: date('end_date'),
-	nextPayoutDate: date('next_payout_date'),
-	createdAt: timestamp('created_at').notNull().defaultNow(),
-	updatedAt: timestamp('updated_at').notNull().defaultNow()
-}, (table) => ({
-	userIdIdx: index('investments_user_id_idx').on(table.userId),
-	statusIdx: index('investments_status_idx').on(table.status)
-}));
+export const investments = pgTable(
+	'investments',
+	{
+		id: uuid('id').defaultRandom().primaryKey(),
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		planId: uuid('plan_id')
+			.notNull()
+			.references(() => plans.id, { onDelete: 'cascade' }),
+		amount: decimal('amount', { precision: 18, scale: 2 }).notNull(),
+		paymentMethod: varchar('payment_method', { length: 50 }).notNull(),
+		cryptoSymbol: varchar('crypto_symbol', { length: 10 }),
+		cryptoAmount: decimal('crypto_amount', { precision: 18, scale: 8 }),
+		transactionHash: varchar('transaction_hash', { length: 255 }),
+		payoutOption: varchar('payout_option', { length: 20 }).notNull(),
+		status: varchar('status', { length: 20 }).notNull().default('pending'),
+		profitAccrued: decimal('profit_accrued', { precision: 18, scale: 2 }).notNull().default('0'),
+		totalExpectedProfit: decimal('total_expected_profit', { precision: 18, scale: 2 }).notNull(),
+		startDate: date('start_date'),
+		endDate: date('end_date'),
+		nextPayoutDate: date('next_payout_date'),
+		createdAt: timestamp('created_at').notNull().defaultNow(),
+		updatedAt: timestamp('updated_at').notNull().defaultNow()
+	},
+	(table) => ({
+		userIdIdx: index('investments_user_id_idx').on(table.userId),
+		statusIdx: index('investments_status_idx').on(table.status)
+	})
+);
 
 // Payouts
 export const payouts = pgTable('payouts', {
@@ -197,27 +205,31 @@ export const platformWallets = pgTable('platform_wallets', {
 });
 
 // Withdrawals
-export const withdrawals = pgTable('withdrawals', {
-	id: uuid('id').defaultRandom().primaryKey(),
-	userId: uuid('user_id')
-		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' }),
-	walletId: uuid('wallet_id')
-		.notNull()
-		.references(() => wallets.id, { onDelete: 'restrict' }),
-	walletType: varchar('wallet_type', { length: 20 }).notNull(),
-	amount: decimal('amount', { precision: 18, scale: 2 }).notNull(),
-	cryptoSymbol: varchar('crypto_symbol', { length: 10 }).notNull(),
-	cryptoAmount: decimal('crypto_amount', { precision: 18, scale: 8 }),
-	status: varchar('status', { length: 20 }).notNull().default('pending'),
-	processedAt: timestamp('processed_at'),
-	transactionHash: varchar('transaction_hash', { length: 255 }),
-	createdAt: timestamp('created_at').notNull().defaultNow(),
-	updatedAt: timestamp('updated_at').notNull().defaultNow()
-}, (table) => ({
-	userIdIdx: index('withdrawals_user_id_idx').on(table.userId),
-	statusIdx: index('withdrawals_status_idx').on(table.status)
-}));
+export const withdrawals = pgTable(
+	'withdrawals',
+	{
+		id: uuid('id').defaultRandom().primaryKey(),
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		walletId: uuid('wallet_id')
+			.notNull()
+			.references(() => wallets.id, { onDelete: 'restrict' }),
+		walletType: varchar('wallet_type', { length: 20 }).notNull(),
+		amount: decimal('amount', { precision: 18, scale: 2 }).notNull(),
+		cryptoSymbol: varchar('crypto_symbol', { length: 10 }).notNull(),
+		cryptoAmount: decimal('crypto_amount', { precision: 18, scale: 8 }),
+		status: varchar('status', { length: 20 }).notNull().default('pending'),
+		processedAt: timestamp('processed_at'),
+		transactionHash: varchar('transaction_hash', { length: 255 }),
+		createdAt: timestamp('created_at').notNull().defaultNow(),
+		updatedAt: timestamp('updated_at').notNull().defaultNow()
+	},
+	(table) => ({
+		userIdIdx: index('withdrawals_user_id_idx').on(table.userId),
+		statusIdx: index('withdrawals_status_idx').on(table.status)
+	})
+);
 
 // Referrals
 export const referrals = pgTable('referrals', {
@@ -312,20 +324,24 @@ export const siteSettings = pgTable('site_settings', {
 });
 
 // Notifications
-export const notifications = pgTable('notifications', {
-	id: uuid('id').defaultRandom().primaryKey(),
-	userId: uuid('user_id')
-		.notNull()
-		.references(() => users.id, { onDelete: 'cascade' }),
-	title: varchar('title', { length: 255 }).notNull(),
-	message: text('message').notNull(),
-	type: varchar('type', { length: 50 }).notNull(),
-	read: boolean('read').notNull().default(false),
-	link: varchar('link', { length: 500 }),
-	createdAt: timestamp('created_at').notNull().defaultNow()
-}, (table) => ({
-	userIdReadIdx: index('notifications_user_id_read_idx').on(table.userId, table.read)
-}));
+export const notifications = pgTable(
+	'notifications',
+	{
+		id: uuid('id').defaultRandom().primaryKey(),
+		userId: uuid('user_id')
+			.notNull()
+			.references(() => users.id, { onDelete: 'cascade' }),
+		title: varchar('title', { length: 255 }).notNull(),
+		message: text('message').notNull(),
+		type: varchar('type', { length: 50 }).notNull(),
+		read: boolean('read').notNull().default(false),
+		link: varchar('link', { length: 500 }),
+		createdAt: timestamp('created_at').notNull().defaultNow()
+	},
+	(table) => ({
+		userIdReadIdx: index('notifications_user_id_read_idx').on(table.userId, table.read)
+	})
+);
 
 // KYC documents
 export const kycDocuments = pgTable('kyc_documents', {
