@@ -10,7 +10,8 @@ import {
 	serial,
 	integer,
 	date,
-	jsonb
+	jsonb,
+	index
 } from 'drizzle-orm/pg-core';
 
 // Users table
@@ -34,7 +35,7 @@ export const users = pgTable('users', {
 	tokenBalance: decimal('token_balance', { precision: 18, scale: 2 }).notNull().default('0'),
 	group: varchar('group', { length: 100 }),
 	referralCode: varchar('referral_code', { length: 50 }).unique(),
-	referredBy: uuid('referred_by').references(() => users.id),
+	referredBy: uuid('referred_by').references(() => users.id, { onDelete: 'set null' }),
 	kycStatus: varchar('kyc_status', { length: 20 }).notNull().default('pending'),
 	twoFactorSecret: text('two_factor_secret'),
 	twoFactorRecoveryCodes: text('two_factor_recovery_codes'),
@@ -52,7 +53,9 @@ export const sessions = pgTable('sessions', {
 	expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
 	ipAddress: varchar('ip_address', { length: 45 }),
 	userAgent: text('user_agent')
-});
+}, (table) => ({
+	userIdIdx: index('sessions_user_id_idx').on(table.userId)
+}));
 
 // Password reset tokens
 export const passwordResetTokens = pgTable('password_reset_tokens', {
@@ -148,7 +151,10 @@ export const investments = pgTable('investments', {
 	nextPayoutDate: date('next_payout_date'),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
 	updatedAt: timestamp('updated_at').notNull().defaultNow()
-});
+}, (table) => ({
+	userIdIdx: index('investments_user_id_idx').on(table.userId),
+	statusIdx: index('investments_status_idx').on(table.status)
+}));
 
 // Payouts
 export const payouts = pgTable('payouts', {
@@ -198,7 +204,7 @@ export const withdrawals = pgTable('withdrawals', {
 		.references(() => users.id, { onDelete: 'cascade' }),
 	walletId: uuid('wallet_id')
 		.notNull()
-		.references(() => wallets.id),
+		.references(() => wallets.id, { onDelete: 'restrict' }),
 	walletType: varchar('wallet_type', { length: 20 }).notNull(),
 	amount: decimal('amount', { precision: 18, scale: 2 }).notNull(),
 	cryptoSymbol: varchar('crypto_symbol', { length: 10 }).notNull(),
@@ -208,7 +214,10 @@ export const withdrawals = pgTable('withdrawals', {
 	transactionHash: varchar('transaction_hash', { length: 255 }),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
 	updatedAt: timestamp('updated_at').notNull().defaultNow()
-});
+}, (table) => ({
+	userIdIdx: index('withdrawals_user_id_idx').on(table.userId),
+	statusIdx: index('withdrawals_status_idx').on(table.status)
+}));
 
 // Referrals
 export const referrals = pgTable('referrals', {
@@ -281,7 +290,7 @@ export const blogPosts = pgTable('blog_posts', {
 	coverImage: varchar('cover_image', { length: 500 }),
 	authorId: uuid('author_id')
 		.notNull()
-		.references(() => users.id),
+		.references(() => users.id, { onDelete: 'cascade' }),
 	status: varchar('status', { length: 20 }).notNull().default('draft'),
 	publishedAt: timestamp('published_at'),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -314,7 +323,9 @@ export const notifications = pgTable('notifications', {
 	read: boolean('read').notNull().default(false),
 	link: varchar('link', { length: 500 }),
 	createdAt: timestamp('created_at').notNull().defaultNow()
-});
+}, (table) => ({
+	userIdReadIdx: index('notifications_user_id_read_idx').on(table.userId, table.read)
+}));
 
 // KYC documents
 export const kycDocuments = pgTable('kyc_documents', {
