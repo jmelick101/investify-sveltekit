@@ -542,3 +542,26 @@ export type Notification = typeof notifications.$inferSelect;
 export type NewNotification = typeof notifications.$inferInsert;
 export type KycDocument = typeof kycDocuments.$inferSelect;
 export type NewKycDocument = typeof kycDocuments.$inferInsert;
+
+// Audit logs table
+export const auditLogs = pgTable('audit_logs', {
+	id: serial('id').primaryKey(),
+	userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
+	action: varchar('action', { length: 100 }).notNull(),
+	resourceType: varchar('resource_type', { length: 50 }).notNull(),
+	resourceId: varchar('resource_id', { length: 255 }),
+	details: jsonb('details'),
+	ipAddress: varchar('ip_address', { length: 45 }),
+	userAgent: text('user_agent'),
+	createdAt: timestamp('created_at').notNull().defaultNow()
+});
+
+export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
+	user: one(users, {
+		fields: [auditLogs.userId],
+		references: [users.id]
+	})
+}));
+
+export type AuditLog = typeof auditLogs.$inferSelect;
+export type NewAuditLog = typeof auditLogs.$inferInsert;
