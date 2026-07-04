@@ -303,6 +303,11 @@ export const blogPosts = pgTable('blog_posts', {
 	authorId: uuid('author_id')
 		.notNull()
 		.references(() => users.id, { onDelete: 'cascade' }),
+	category: varchar('category', { length: 100 }).notNull().default('Market Updates'),
+	readTime: varchar('read_time', { length: 50 }).default('5 min read'),
+	authorBio: text('author_bio'),
+	authorImage: varchar('author_image', { length: 500 }),
+	relatedArticleIds: jsonb('related_article_ids').default([]),
 	status: varchar('status', { length: 20 }).notNull().default('draft'),
 	publishedAt: timestamp('published_at'),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -355,6 +360,18 @@ export const kycDocuments = pgTable('kyc_documents', {
 	notes: text('notes'),
 	createdAt: timestamp('created_at').notNull().defaultNow(),
 	updatedAt: timestamp('updated_at').notNull().defaultNow()
+});
+
+// Contact form submissions
+export const contactSubmissions = pgTable('contact_submissions', {
+	id: uuid('id').defaultRandom().primaryKey(),
+	firstName: varchar('first_name', { length: 100 }).notNull(),
+	lastName: varchar('last_name', { length: 100 }).notNull(),
+	email: varchar('email', { length: 255 }).notNull(),
+	interest: varchar('interest', { length: 100 }).notNull().default('General Inquiry'),
+	message: text('message').notNull(),
+	read: boolean('read').notNull().default(false),
+	createdAt: timestamp('created_at').notNull().defaultNow()
 });
 
 // Relations

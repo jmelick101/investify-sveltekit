@@ -1,11 +1,11 @@
 <script lang="ts">
     import StatCard from '$lib/components/StatCard.svelte';
     import { Wallet, TrendingUp, Users, Coins, Award, RefreshCw, ArrowUpRight, Compass } from 'lucide-svelte';
-    import Chart from '$lib/components-legacy/user/Chart.svelte';
+    import Chart from '$lib/components/user/Chart.svelte';
     import { formatCurrency, formatNumber } from '$lib/utils';
     import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '$lib/components/ui/empty';
     import { Button } from '$lib/components/ui/button';
-    import AiChatSheet from '$lib/components-legacy/user/AiChatSheet.svelte';
+    import AiChatSheet from '$lib/components/user/AiChatSheet.svelte';
     import type { PageData } from './$types';
 
     let { data }: { data: PageData } = $props();

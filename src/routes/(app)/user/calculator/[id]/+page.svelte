@@ -1,11 +1,11 @@
 <script lang="ts">
     import { RotateCcw, DollarSign, BanknoteArrowDownIcon, BanknoteArrowUpIcon } from 'lucide-svelte';
     import { Button } from '$lib/components/ui/button';
-    import CalculatorDetailsSection from '$lib/components-legacy/user/CalculatorDetailsSection.svelte';
+    import CalculatorDetailsSection from '$lib/components/user/CalculatorDetailsSection.svelte';
     import StatCard from '$lib/components/StatCard.svelte';
     import { formatCurrency } from '$lib/utils';
-    import CalculatorPayoutTable from '$lib/components-legacy/user/CalculatorPayoutTable.svelte';
-    import BuyPlanModal from '$lib/components-legacy/user/BuyPlanModal.svelte';
+    import CalculatorPayoutTable from '$lib/components/user/CalculatorPayoutTable.svelte';
+    import BuyPlanModal from '$lib/components/user/BuyPlanModal.svelte';
     import type { PageData } from './$types';
 
     let { data }: { data: PageData } = $props();

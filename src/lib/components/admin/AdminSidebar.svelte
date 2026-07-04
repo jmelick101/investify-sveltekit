@@ -1,7 +1,7 @@
 <script lang="ts">
-    import NavFooter from '@/components/NavFooter.svelte';
-    import NavMain from '@/components/NavMain.svelte';
-    import NavUser from '@/components/NavUser.svelte';
+    import NavFooter from '$lib/components/NavFooter.svelte';
+    import NavMain from '$lib/components/NavMain.svelte';
+    import NavUser from '$lib/components/NavUser.svelte';
     import {
         Sidebar,
         SidebarContent,
@@ -12,9 +12,9 @@
         SidebarMenuItem,
         SidebarSeparator,
         useSidebar,
-    } from '@/components/ui/sidebar';
-    import type { NavItem, UserMenuItem } from '@/types';
-    import { Link } from '@inertiajs/svelte';
+    } from '$lib/components/ui/sidebar';
+    import type { NavItem, UserMenuItem } from '$lib/types';
+    // Link replaced with native <a> tags
     import { 
         LayoutGrid, 
         TrendingUp, 
@@ -30,7 +30,7 @@
         BarChart3,
         ArrowLeft
     } from 'lucide-svelte';
-    import AppLogo from '@/components-legacy/AppLogo.svelte';
+    import AppLogo from '$lib/components/AppLogo.svelte';
 
     const sidebar = useSidebar();
 

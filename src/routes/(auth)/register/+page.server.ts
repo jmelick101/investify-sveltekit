@@ -10,6 +10,8 @@ import {
 	createEmailVerificationToken,
 	sendEmailVerificationEmail
 } from '$lib/server/services/email';
+import { authRateLimiter } from '$lib/server/rate-limit';
+import { logAuditEvent, AuditActions } from '$lib/server/audit';
 import crypto from 'crypto';
 
 export const load: PageServerLoad = async (event) => {
@@ -26,6 +28,29 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
 	default: async (event) => {
+		// Rate limiting
+		const rateLimitResult = authRateLimiter.check(event.request);
+		if (!rateLimitResult.allowed) {
+			return fail(429, {
+				errors: {
+					firstName: null,
+					lastName: null,
+					email: 'Too many registration attempts. Please try again later.',
+					phone: null,
+					password: null,
+					passwordConfirmation: null,
+					referralCode: null
+				},
+				data: {
+					firstName: '',
+					lastName: '',
+					email: '',
+					phone: '',
+					referralCode: ''
+				}
+			});
+		}
+
 		const formData = await event.request.formData();
 		const firstName = formData.get('firstName');
 		const lastName = formData.get('lastName');
@@ -179,6 +204,16 @@ export const actions: Actions = {
 				referredBy: referredById
 			})
 			.returning();
+
+		// Log registration
+		await logAuditEvent({
+			userId: newUser.id,
+			action: AuditActions.USER_REGISTER,
+			resourceType: 'user',
+			resourceId: newUser.id,
+			ipAddress: event.request.headers.get('x-forwarded-for') || event.request.headers.get('x-real-ip') || 'unknown',
+			userAgent: event.request.headers.get('user-agent') || 'unknown'
+		});
 
 		// Send verification email
 		const verificationToken = await createEmailVerificationToken(newUser.id);

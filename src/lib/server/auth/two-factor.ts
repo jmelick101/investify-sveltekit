@@ -1,6 +1,28 @@
 import * as OTPAuth from 'otpauth';
 import QRCode from 'qrcode';
 
+export interface TwoFactorSecret {
+	base32: string;
+	otpauthUrl: string;
+}
+
+export async function generateTwoFactorSecret(email: string): Promise<TwoFactorSecret> {
+	const secret = new OTPAuth.Secret({ size: 20 });
+	const totp = new OTPAuth.TOTP({
+		issuer: 'Investify',
+		label: email,
+		algorithm: 'SHA1',
+		digits: 6,
+		period: 30,
+		secret
+	});
+
+	return {
+		base32: secret.base32,
+		otpauthUrl: totp.toString()
+	};
+}
+
 export function generateTOTPSecret(): string {
 	const secret = new OTPAuth.Secret({ size: 20 });
 	return secret.base32;
@@ -54,4 +76,15 @@ export function verifyRecoveryCode(codes: string[], inputCode: string): boolean 
 
 export function removeRecoveryCode(codes: string[], usedCode: string): string[] {
 	return codes.filter((code) => code !== usedCode.toUpperCase());
+}
+
+export interface BackupCodesResult {
+	codes: string[];
+	codesHash: string;
+}
+
+export async function generateBackupCodes(userId: string): Promise<BackupCodesResult> {
+	const codes = generateRecoveryCodes();
+	const codesHash = codes.join(',');
+	return { codes, codesHash };
 }

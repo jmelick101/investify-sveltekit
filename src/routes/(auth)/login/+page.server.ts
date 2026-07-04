@@ -6,6 +6,8 @@ import { eq } from 'drizzle-orm';
 import { verifyPassword } from '$lib/server/auth/password';
 import { loginSchema } from '$lib/server/validation/auth';
 import { lucia } from '$lib/server/auth';
+import { authRateLimiter } from '$lib/server/rate-limit';
+import { logAuditEvent, AuditActions } from '$lib/server/audit';
 
 export const load: PageServerLoad = async (event) => {
 	if (event.locals.user) {
@@ -20,6 +22,18 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
 	default: async (event) => {
+		// Rate limiting
+		const rateLimitResult = authRateLimiter.check(event.request);
+		if (!rateLimitResult.allowed) {
+			return fail(429, {
+				errors: {
+					email: 'Too many login attempts. Please try again later.',
+					password: null
+				},
+				data: { email: '' }
+			});
+		}
+
 		const formData = await event.request.formData();
 		const email = formData.get('email');
 		const password = formData.get('password');
@@ -60,6 +74,16 @@ export const actions: Actions = {
 				data: { email: result.data.email }
 			});
 		}
+
+		// Log successful login
+		await logAuditEvent({
+			userId: user.id,
+			action: AuditActions.USER_LOGIN,
+			resourceType: 'user',
+			resourceId: user.id,
+			ipAddress: event.request.headers.get('x-forwarded-for') || event.request.headers.get('x-real-ip') || 'unknown',
+			userAgent: event.request.headers.get('user-agent') || 'unknown'
+		});
 
 		// Check if 2FA is enabled (check if user.twoFactorConfirmedAt is not null and user.twoFactorSecret exists)
 		if (user.twoFactorConfirmedAt && user.twoFactorSecret) {

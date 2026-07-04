@@ -1,4 +1,4 @@
-import { page } from '@inertiajs/svelte';
+import { page } from '$app/stores';
 import { derived } from 'svelte/store';
 
 

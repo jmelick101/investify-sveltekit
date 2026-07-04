@@ -7,8 +7,8 @@
     import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
     import { formatCurrency, formatNumber, timeAgo } from '$lib/utils';
     import * as InputGroup from '$lib/components/ui/input-group/index.js';
-    import CalculatorModal from '$lib/components-legacy/user/CalculatorModal.svelte';
-    import BuyPlanModal from '$lib/components-legacy/user/BuyPlanModal.svelte';
+    import CalculatorModal from '$lib/components/user/CalculatorModal.svelte';
+    import BuyPlanModal from '$lib/components/user/BuyPlanModal.svelte';
     import type { PageData } from './$types';
 
     let { data }: { data: PageData } = $props();

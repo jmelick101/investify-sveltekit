@@ -8,7 +8,7 @@
     import * as Pagination from '$lib/components/ui/pagination/index.js';
     import { formatDateExt, formatCurrency } from '$lib/utils';
     import Status from '$lib/components/Status.svelte';
-    import CreateWithdrawalModal from '$lib/components-legacy/user/CreateWithdrawalModal.svelte';
+    import CreateWithdrawalModal from '$lib/components/user/CreateWithdrawalModal.svelte';
     import type { PageData } from './$types';
 
     let { data }: { data: PageData } = $props();
