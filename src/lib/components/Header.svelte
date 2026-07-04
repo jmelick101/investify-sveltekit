@@ -5,13 +5,14 @@
     import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '$lib/components/ui/sheet';
     import UserMenuContent from '$lib/components/UserMenuContent.svelte';
     import { getInitials } from '$lib/hooks/useInitials';
-    import { page } from '$app/stores'; // Link replaced with native <a> tags
-    import { SYSTEM } from '$lib/store';
+    import { page } from '$app/stores';
+    import { SYSTEM } from '$lib/store.svelte';
     import { LayoutGrid, TrendingUp, Compass, Users, ArrowDownToLine, Wallet, Newspaper, Headset, Menu, ArrowLeft } from 'lucide-svelte';
+    import type { User } from '$lib/types';
 
-    let user = $derived($page.props.auth.user);
+    let { user }: { user: User } = $props();
 
-    const isCurrentRoute = (url: string) => $page.url.startsWith(url);
+    const isCurrentRoute = (url: string) => $page.url.pathname.startsWith(url);
 
     const primaryNav = [
         { title: 'Dashboard', href: '/user/dashboard', icon: LayoutGrid },
@@ -52,7 +53,7 @@
                         <nav class="space-y-1">
                             <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Main</p>
                             {#each primaryNav as item}
-                                <Link
+                                <a
                                     href={item.href}
                                     class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors {isCurrentRoute(
                                         item.href,
@@ -62,11 +63,11 @@
                                 >
                                     <item.icon class="h-4 w-4" />
                                     {item.title}
-                                </Link>
+                                </a>
                             {/each}
                             <p class="mb-2 mt-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">More</p>
                             {#each secondaryNav as item}
-                                <Link
+                                <a
                                     href={item.href}
                                     class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors {isCurrentRoute(
                                         item.href,
@@ -76,7 +77,7 @@
                                 >
                                     <item.icon class="h-4 w-4" />
                                     {item.title}
-                                </Link>
+                                </a>
                             {/each}
                         </nav>
                         <div class="border-t border-border/50 pt-4">
@@ -91,17 +92,17 @@
         </div>
 
         <!-- Logo -->
-        <Link href={route('user.dashboard')} class="flex items-center gap-2.5">
+        <a href="/user/dashboard" class="flex items-center gap-2.5">
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
                 <span class="text-sm font-bold">{$SYSTEM.siteName?.charAt(0) ?? 'V'}</span>
             </div>
             <span class="hidden text-base font-semibold tracking-tight sm:block">{$SYSTEM.siteName}</span>
-        </Link>
+        </a>
 
         <!-- Desktop Navigation -->
         <nav class="ml-8 hidden h-full items-center gap-1 lg:flex">
             {#each primaryNav as item}
-                <Link
+                <a
                     href={item.href}
                     class="relative flex h-full items-center gap-2 px-3 text-sm font-medium transition-colors {isCurrentRoute(item.href)
                         ? 'text-foreground'
@@ -112,7 +113,7 @@
                     {#if isCurrentRoute(item.href)}
                         <div class="absolute bottom-0 left-0 h-0.5 w-full bg-primary"></div>
                     {/if}
-                </Link>
+                </a>
             {/each}
         </nav>
 
@@ -121,14 +122,14 @@
             <!-- Secondary nav links (desktop only, subtle) -->
             <div class="hidden items-center gap-1 xl:flex">
                 {#each secondaryNav as item}
-                    <Link
+                    <a
                         href={item.href}
                         class="rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors {isCurrentRoute(item.href)
                             ? 'bg-accent text-foreground'
                             : 'text-muted-foreground hover:bg-accent hover:text-foreground'}"
                     >
                         {item.title}
-                    </Link>
+                    </a>
                 {/each}
             </div>
 

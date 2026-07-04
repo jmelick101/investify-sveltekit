@@ -23,7 +23,7 @@
 <AppShell variant="header">
     <!-- Top Navigation Bar -->
     <div>
-        <Header />
+        <Header user={data.user} />
 
         <!-- Breadcrumbs -->
         {#if breadcrumbs.length > 1}

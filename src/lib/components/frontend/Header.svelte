@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { siteSettings } from '$lib/stores/site.svelte';
+    import { SYSTEM } from '$lib/store.svelte';
     import type { User } from '$lib/types';
     import { ArrowRight } from 'lucide-svelte';
 
@@ -38,7 +38,7 @@
         <div class="flex h-16 items-center justify-between">
             <!-- Logo -->
             <a href="/" class="text-base font-semibold tracking-tight text-foreground" onclick={closeMenu}>
-                {siteSettings.siteName}
+                {$SYSTEM.siteName}
             </a>
 
             <!-- Desktop Navigation — centered -->
