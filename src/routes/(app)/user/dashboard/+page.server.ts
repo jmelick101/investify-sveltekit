@@ -17,6 +17,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 					profitAccrued: investments.profitAccrued,
 					startDate: investments.startDate,
 					endDate: investments.endDate,
+					planId: investments.planId,
 					planName: plans.name,
 					planCategory: plans.category
 				})

@@ -97,7 +97,7 @@
                 {#each data.investments as investment}
                     <a
                         class="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border/40 bg-card p-5 transition-all hover:border-primary/30 hover:shadow-md"
-                        href="/user/my-investments/{investment.plan.id}"
+                        href="/user/my-investments/{investment.id}"
                     >
                         <!-- Top Area -->
                         <div class="mb-4 flex items-start justify-between">
@@ -115,15 +115,15 @@
 
                         <!-- Content -->
                         <div>
-                            <h4 class="font-semibold text-foreground line-clamp-1">{investment.plan.name}</h4>
+                            <h4 class="font-semibold text-foreground line-clamp-1">{investment.planName}</h4>
                             <div class="mt-4 flex items-end justify-between">
                                 <div>
                                     <p class="text-xs text-muted-foreground uppercase tracking-wider mb-1">Invested</p>
-                                    <p class="text-lg font-bold text-foreground">{formatCurrency(investment.invested)}</p>
+                                    <p class="text-lg font-bold text-foreground">{formatCurrency(parseFloat(investment.amount))}</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-xs text-muted-foreground uppercase tracking-wider mb-1">Return</p>
-                                    <p class="text-sm font-semibold text-success">+12%</p>
+                                    <p class="text-xs text-muted-foreground uppercase tracking-wider mb-1">Profit</p>
+                                    <p class="text-sm font-semibold text-success">+{formatCurrency(parseFloat(investment.profitAccrued || '0'))}</p>
                                 </div>
                             </div>
                         </div>
