@@ -59,7 +59,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	return {
 		breadcrumbs: [{ title: 'Dashboard', href: '/user/dashboard' }],
 		user,
-		investments: userInvestments,
+		investments: userInvestments || [],
 		stats: {
 			totalInvested: parseFloat(statsData.totalInvested || '0'),
 			totalProfit: parseFloat(statsData.totalProfit || '0'),
