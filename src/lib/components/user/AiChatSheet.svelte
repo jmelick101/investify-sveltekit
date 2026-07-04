@@ -94,19 +94,21 @@
 
 <Sheet.Root bind:open>
     <Sheet.Trigger>
-        <Button class="w-full h-10 p-px relative group bg-transparent hover:bg-transparent border-0 overflow-hidden shadow-sm">
-            <span
-                class="absolute inset-0 bg-linear-to-r from-pink-500 via-orange-400 to-purple-500 opacity-70 group-hover:opacity-100 transition-opacity duration-300"
-            ></span>
-            <div
-                class="relative flex items-center justify-start w-full h-full bg-background rounded-[calc(var(--radius)-1px)] px-4 transition-all duration-300 group-hover:bg-background/90 group-hover:shadow-[0_0_15px_-3px_rgba(236,72,153,0.4)]"
-            >
-                <Sparkles class="mr-2 h-4 w-4 text-orange-400 transition-transform group-hover:scale-110 duration-300" />
-                <span class="text-transparent bg-clip-text bg-linear-to-r from-pink-500 via-orange-400 to-purple-500 font-semibold tracking-wide">
-                    Ask AI
-                </span>
-            </div>
-        </Button>
+        {#snippet child({ props })}
+            <button {...props} class="w-full h-10 p-px relative group bg-transparent hover:bg-transparent border-0 overflow-hidden shadow-sm rounded-md">
+                <span
+                    class="absolute inset-0 bg-linear-to-r from-pink-500 via-orange-400 to-purple-500 opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                ></span>
+                <div
+                    class="relative flex items-center justify-start w-full h-full bg-background rounded-[calc(var(--radius)-1px)] px-4 transition-all duration-300 group-hover:bg-background/90 group-hover:shadow-[0_0_15px_-3px_rgba(236,72,153,0.4)]"
+                >
+                    <Sparkles class="mr-2 h-4 w-4 text-orange-400 transition-transform group-hover:scale-110 duration-300" />
+                    <span class="text-transparent bg-clip-text bg-linear-to-r from-pink-500 via-orange-400 to-purple-500 font-semibold tracking-wide">
+                        Ask AI
+                    </span>
+                </div>
+            </button>
+        {/snippet}
     </Sheet.Trigger>
     <Sheet.Content side="right" class="sm:max-w-md w-full flex flex-col p-0">
         <!-- Header -->
