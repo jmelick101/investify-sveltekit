@@ -9,8 +9,14 @@ try {
 	DATABASE_URL = env.DATABASE_URL;
 } catch {
 	// Fallback for standalone scripts (seed, migrations, etc.)
+	if (!process.env.DATABASE_URL) {
+		const { config } = await import('dotenv');
+		config({ path: '.env' });
+	}
 	DATABASE_URL = process.env.DATABASE_URL || '';
 }
 
-const client = postgres(DATABASE_URL);
+const client = postgres(DATABASE_URL, {
+	ssl: DATABASE_URL.includes('sslmode=require') ? { rejectUnauthorized: false } : undefined
+});
 export const db = drizzle(client, { schema });
