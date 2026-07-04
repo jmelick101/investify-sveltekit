@@ -65,6 +65,24 @@ export async function createEmailVerificationToken(userId: string): Promise<stri
 	return token;
 }
 
+export async function verifyEmailVerificationToken(token: string): Promise<string | null> {
+	const tokenHash = hashToken(token);
+	const [record] = await db
+		.select()
+		.from(emailVerificationTokens)
+		.where(eq(emailVerificationTokens.tokenHash, tokenHash));
+	if (!record) return null;
+	if (record.expiresAt < new Date()) {
+		await deleteEmailVerificationToken(record.userId);
+		return null;
+	}
+	return record.userId;
+}
+
+export async function deleteEmailVerificationToken(userId: string): Promise<void> {
+	await db.delete(emailVerificationTokens).where(eq(emailVerificationTokens.userId, userId));
+}
+
 export async function sendEmailVerificationEmail(email: string, token: string): Promise<void> {
 	const verifyUrl = `${origin}/verify-email/${token}`;
 	console.log(`

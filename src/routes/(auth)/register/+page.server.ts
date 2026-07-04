@@ -6,6 +6,10 @@ import { eq } from 'drizzle-orm';
 import { hashPassword } from '$lib/server/auth/password';
 import { registerSchema } from '$lib/server/validation/auth';
 import { lucia } from '$lib/server/auth';
+import {
+	createEmailVerificationToken,
+	sendEmailVerificationEmail
+} from '$lib/server/services/email';
 import crypto from 'crypto';
 
 export const load: PageServerLoad = async (event) => {
@@ -175,6 +179,10 @@ export const actions: Actions = {
 				referredBy: referredById
 			})
 			.returning();
+
+		// Send verification email
+		const verificationToken = await createEmailVerificationToken(newUser.id);
+		await sendEmailVerificationEmail(newUser.email, verificationToken);
 
 		// Create session
 		const session = await lucia.createSession(newUser.id, {});
