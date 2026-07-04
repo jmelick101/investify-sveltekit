@@ -6,6 +6,7 @@ import { eq } from 'drizzle-orm';
 import { resetPasswordSchema } from '$lib/server/validation/auth';
 import { verifyPasswordResetToken, deletePasswordResetToken } from '$lib/server/services/email';
 import { hashPassword } from '$lib/server/auth/password';
+import { lucia } from '$lib/server/auth';
 
 export const load: PageServerLoad = async (event) => {
 	if (event.locals.user) {
@@ -48,6 +49,7 @@ export const actions: Actions = {
 
 		const passwordHash = await hashPassword(result.data.password);
 		await db.update(users).set({ passwordHash }).where(eq(users.id, userId));
+		await lucia.invalidateUserSessions(userId);
 		await deletePasswordResetToken(userId);
 
 		return { success: true };
